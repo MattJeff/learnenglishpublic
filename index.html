@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix English Learner - Apprenez l'anglais en regardant Netflix</title>
+    <meta name="description" content="Transformez votre temps Netflix en cours d'anglais ! Extension Chrome avec IA, flashcards et gamification.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #e50914 0%, #1e3a8a 50%, #6366f1 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+        
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            animation: slideInLeft 1s ease-out;
+        }
+        
+        .hero-content .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            animation: slideInLeft 1s ease-out 0.2s both;
+        }
+        
+        .hero-content .description {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 40px;
+            animation: slideInLeft 1s ease-out 0.4s both;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            animation: slideInLeft 1s ease-out 0.6s both;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #e50914;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 15px 30px;
+            border: 2px solid white;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: #e50914;
+        }
+        
+        .hero-visual {
+            position: relative;
+            animation: slideInRight 1s ease-out 0.8s both;
+        }
+        
+        .phone-mockup {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+            animation: bounce 3s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        .floating-word {
+            position: absolute;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            color: #333;
+            animation: floatWord 4s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .floating-word:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .floating-word:nth-child(2) { top: 40%; right: 15%; animation-delay: 1s; }
+        .floating-word:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 2s; }
+        .floating-word:nth-child(4) { bottom: 50%; right: 10%; animation-delay: 3s; }
+        
+        @keyframes floatWord {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-15px) rotate(2deg); opacity: 1; }
+        }
+        
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: #f8fafc;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 20px;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 60px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e50914, #6366f1);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+        
+        /* Video Section */
+        .video-section {
+            padding: 100px 0;
+            background: #1a202c;
+            color: white;
+        }
+        
+        .video-container {
+            text-align: center;
+        }
+        
+        .video-placeholder {
+            background: #2d3748;
+            border-radius: 20px;
+            padding: 60px 40px;
+            margin: 40px 0;
+            border: 2px dashed #4a5568;
+            transition: all 0.3s ease;
+        }
+        
+        .video-placeholder:hover {
+            border-color: #e50914;
+            background: #374151;
+        }
+        
+        .video-placeholder h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #e2e8f0;
+        }
+        
+        .video-placeholder p {
+            color: #a0aec0;
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .pricing-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-card.featured {
+            border-color: #e50914;
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(229, 9, 20, 0.2);
+        }
+        
+        .pricing-card.featured::before {
+            content: 'POPULAIRE';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e50914;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-5px);
+        }
+        
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+        
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #e50914;
+            margin-bottom: 5px;
+        }
+        
+        .plan-period {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .plan-features li {
+            padding: 8px 0;
+            color: #4a5568;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .plan-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #e50914 0%, #6366f1 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1a202c;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .footer p {
+            color: #a0aec0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card.featured {
+                transform: none;
+            }
+        }
+        
+        /* Chrome Store Button */
+        .chrome-store-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .chrome-store-btn:hover {
+            background: #3367d6;
+            transform: translateY(-2px);
+        }
+        
+        .chrome-store-btn img {
+            width: 24px;
+            height: 24px;
+        }
+        
+        /* Coming Soon Badge */
+        .coming-soon {
+            background: #fbbf24;
+            color: #92400e;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Apprenez l'anglais avec Netflix</h1>
+                <p class="subtitle">Transformez votre temps de visionnage en cours d'anglais interactif</p>
+                <p class="description">
+                    Extension Chrome révolutionnaire qui capture les sous-titres Netflix, Disney+ et Prime Video 
+                    pour créer votre vocabulaire personnalisé avec l'IA et des flashcards intelligentes.
+                </p>
+                <div class="cta-buttons">
+                    <a href="#" class="btn-primary" id="chrome-store-link">
+                        🚀 Installer l'Extension
+                        <span class="coming-soon">Bientôt</span>
+                    </a>
+                    <a href="#features" class="btn-secondary">📖 Découvrir</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="phone-mockup">
+                    <div style="width: 100%; height: 300px; background: rgba(255,255,255,0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                        📱 Interface Extension
+                    </div>
+                </div>
+                <div class="floating-elements">
+                    <div class="floating-word">amazing</div>
+                    <div class="floating-word">brilliant</div>
+                    <div class="floating-word">adventure</div>
+                    <div class="floating-word">discover</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Fonctionnalités Révolutionnaires</h2>
+            <p class="section-subtitle">
+                Une approche unique qui combine divertissement et apprentissage pour des résultats exceptionnels
+            </p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🎬</span>
+                    <h3>Capture Automatique</h3>
+                    <p>Capture les sous-titres Netflix, Disney+ et Prime Video en temps réel. Un clic suffit pour sauvegarder n'importe quel mot.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🤖</span>
+                    <h3>Intelligence Artificielle</h3>
+                    <p>Traductions instantanées, définitions contextuelles et exemples d'usage générés par notre IA avancée.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🃏</span>
+                    <h3>Flashcards Intelligentes</h3>
+                    <p>Système de répétition espacée avec algorithme SM-2 pour une mémorisation optimale et durable.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🎮</span>
+                    <h3>Gamification</h3>
+                    <p>XP, niveaux, streaks et badges pour maintenir votre motivation et suivre vos progrès.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3>Statistiques Avancées</h3>
+                    <p>Tableaux de bord détaillés pour analyser votre progression et identifier vos points forts.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🔄</span>
+                    <h3>Synchronisation Cloud</h3>
+                    <p>Vos données synchronisées sur tous vos appareils Chrome pour apprendre partout.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section class="video-section">
+        <div class="container">
+            <div class="video-container">
+                <h2 class="section-title" style="color: white;">Découvrez Netflix English Learner en Action</h2>
+                <p class="section-subtitle" style="color: #a0aec0;">
+                    Voyez comment transformer votre expérience Netflix en cours d'anglais interactif
+                </p>
+                
+                <div class="video-placeholder">
+                    <h3>🎥 Vidéo de Démonstration</h3>
+                    <p>Vidéo de présentation complète à venir</p>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">
+                        Capture d'écran • Fonctionnalités • Interface • Résultats
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Tarifs Simples et Transparents</h2>
+            <p class="section-subtitle">
+                Commencez gratuitement, passez au premium quand vous êtes prêt
+            </p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3 class="plan-name">Gratuit</h3>
+                    <div class="plan-price">0€</div>
+                    <p class="plan-period">Pour toujours</p>
+                    
+                    <ul class="plan-features">
+                        <li>500 mots de vocabulaire</li>
+                        <li>Traductions IA incluses</li>
+                        <li>Flashcards de base</li>
+                        <li>Statistiques simples</li>
+                        <li>Netflix + Disney+ + Prime Video</li>
+                    </ul>
+                    
+                    <a href="#" class="btn-primary">Commencer Gratuitement</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <h3 class="plan-name">Premium</h3>
+                    <div class="plan-price">4.99€</div>
+                    <p class="plan-period">par mois</p>
+                    
+                    <ul class="plan-features">
+                        <li>Vocabulaire illimité</li>
+                        <li>IA avancée + contexte</li>
+                        <li>4 modes de flashcards</li>
+                        <li>Statistiques détaillées</li>
+                        <li>Gamification complète</li>
+                        <li>Support prioritaire</li>
+                    </ul>
+                    
+                    <a href="#" class="btn-primary">Passer au Premium</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Prêt à Révolutionner Votre Apprentissage ?</h2>
+            <p>Rejoignez des milliers d'utilisateurs qui apprennent l'anglais en s'amusant</p>
+            
+            <a href="#" class="btn-primary" style="background: white; color: #e50914;" id="final-cta">
+                🚀 Installer Netflix English Learner
+            </a>
+            
+            <a href="https://chrome.google.com/webstore" class="chrome-store-btn" target="_blank">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                Disponible sur Chrome Web Store
+                <span class="coming-soon">Bientôt</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Netflix English Learner. Tous droits réservés.</p>
+            <p style="margin-top: 10px;">
+                <a href="privacy-policy.html" style="color: #a0aec0; text-decoration: none;">Politique de Confidentialité</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Update Chrome Store links when extension is published
+        function updateChromeStoreLinks(chromeStoreUrl) {
+            const links = document.querySelectorAll('#chrome-store-link, #final-cta');
+            links.forEach(link => {
+                link.href = chromeStoreUrl;
+                link.querySelector('.coming-soon')?.remove();
+            });
+        }
+
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Pricing cards animation
+        document.querySelectorAll('.pricing-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = `all 0.6s ease ${index * 0.2}s`;
+            observer.observe(card);
+        });
+
+        // Floating words animation enhancement
+        document.querySelectorAll('.floating-word').forEach(word => {
+            word.addEventListener('mouseenter', () => {
+                word.style.transform = 'scale(1.1) translateY(-5px)';
+            });
+            
+            word.addEventListener('mouseleave', () => {
+                word.style.transform = 'scale(1) translateY(0px)';
+            });
+        });
+
+        // Example: Update when extension is published
+        // updateChromeStoreLinks('https://chrome.google.com/webstore/detail/netflix-english-learner/YOUR_EXTENSION_ID');
+    </script>
+</body>
+</html>
