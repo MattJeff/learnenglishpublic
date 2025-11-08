@@ -1,38 +1,111 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netflix English Learner - Apprenez l'anglais en regardant Netflix</title>
-    <meta name="description" content="Transformez votre temps Netflix en cours d'anglais ! Extension Chrome avec IA, flashcards et gamification.">
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <title>FlixLingo - Apprenez l'anglais sur Netflix, Disney+ & Prime Video</title>
+    <meta name="description" content="Apprenez l'anglais sur Netflix, Disney+ & Prime ! Cliquez sur les mots des sous-titres pour enrichir votre vocabulaire.">
+
+    <!-- Design System -->
+    <link rel="stylesheet" href="css-variables.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="theme-manager.js"></script>
+
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--color-text-primary);
             line-height: 1.6;
-            color: #333;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color-default);
+            padding: var(--spacing-lg) var(--spacing-2xl);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2xl);
+        }
+
+        .nav-link {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .theme-toggle {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color-default);
+            border-radius: var(--border-radius-full);
+            padding: var(--spacing-sm) var(--spacing-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: var(--font-size-lg);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            transform: scale(1.05);
+        }
+
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #e50914 0%, #1e3a8a 50%, #6366f1 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
+            justify-content: center;
+            padding: calc(80px + var(--spacing-4xl)) var(--spacing-2xl) var(--spacing-4xl);
             position: relative;
             overflow: hidden;
         }
-        
+
         .hero::before {
             content: '';
             position: absolute;
@@ -40,199 +113,222 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            animation: float 20s ease-in-out infinite;
+            background: radial-gradient(circle at 30% 20%, var(--color-primary-light) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, var(--color-accent-light) 0%, transparent 50%);
+            opacity: 0.15;
+            pointer-events: none;
         }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(1deg); }
-        }
-        
+
         .hero-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 60px;
+            gap: var(--spacing-4xl);
             align-items: center;
             position: relative;
-            z-index: 2;
+            z-index: 1;
         }
-        
+
         .hero-content h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 20px;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: var(--font-weight-black);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-lg);
             line-height: 1.1;
-            animation: slideInLeft 1s ease-out;
         }
-        
-        .hero-content .subtitle {
-            font-size: 1.3rem;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 30px;
-            animation: slideInLeft 1s ease-out 0.2s both;
+
+        .hero-content h1 .gradient-text {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        .hero-content .description {
-            font-size: 1.1rem;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 40px;
-            animation: slideInLeft 1s ease-out 0.4s both;
+
+        .hero-subtitle {
+            font-size: var(--font-size-xl);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-2xl);
+            line-height: 1.6;
         }
-        
+
+        .hero-stats {
+            display: flex;
+            gap: var(--spacing-2xl);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+        }
+
         .cta-buttons {
             display: flex;
-            gap: 20px;
-            animation: slideInLeft 1s ease-out 0.6s both;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
         }
-        
-        .btn-primary {
-            background: white;
-            color: #e50914;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+
+        .btn {
+            padding: var(--spacing-md) var(--spacing-2xl);
+            border-radius: var(--border-radius-lg);
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--font-size-base);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            padding: 15px 30px;
-            border: 2px solid white;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
+            gap: var(--spacing-sm);
             transition: all 0.3s ease;
-            text-decoration: none;
+            cursor: pointer;
+            border: none;
         }
-        
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--color-text-primary);
+            border: 2px solid var(--border-color-default);
+        }
+
         .btn-secondary:hover {
-            background: white;
-            color: #e50914;
+            background: var(--bg-tertiary);
+            border-color: var(--color-primary);
         }
-        
+
         .hero-visual {
             position: relative;
-            animation: slideInRight 1s ease-out 0.8s both;
         }
-        
-        .phone-mockup {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
+
+        .hero-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color-default);
+            border-radius: var(--border-radius-2xl);
+            padding: var(--spacing-3xl);
+            box-shadow: var(--shadow-2xl);
             position: relative;
-            animation: bounce 3s ease-in-out infinite;
+            overflow: hidden;
         }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .floating-elements {
+
+        .hero-card::before {
+            content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--color-primary-light) 0%, transparent 70%);
+            opacity: 0.1;
+            animation: rotate 20s linear infinite;
         }
-        
-        .floating-word {
-            position: absolute;
-            background: rgba(255,255,255,0.9);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 500;
-            color: #333;
-            animation: floatWord 4s ease-in-out infinite;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
-        
-        .floating-word:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-        .floating-word:nth-child(2) { top: 40%; right: 15%; animation-delay: 1s; }
-        .floating-word:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 2s; }
-        .floating-word:nth-child(4) { bottom: 50%; right: 10%; animation-delay: 3s; }
-        
-        @keyframes floatWord {
-            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
-            50% { transform: translateY(-15px) rotate(2deg); opacity: 1; }
+
+        .floating-words {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-lg);
         }
-        
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-50px); }
-            to { opacity: 1; transform: translateX(0); }
+
+        .word-item {
+            background: var(--bg-tertiary);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color-default);
+            transition: all 0.3s ease;
         }
-        
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
+
+        .word-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-lg);
         }
-        
+
+        .word-en {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .word-fr {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
         /* Features Section */
-        .features {
-            padding: 100px 0;
-            background: #f8fafc;
+        .section {
+            padding: var(--spacing-5xl) var(--spacing-2xl);
+            position: relative;
         }
-        
+
+        .section-dark {
+            background: var(--bg-secondary);
+        }
+
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
         }
-        
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--spacing-4xl);
+        }
+
         .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #1a202c;
-            margin-bottom: 20px;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
         }
-        
+
         .section-subtitle {
-            text-align: center;
-            font-size: 1.2rem;
-            color: #64748b;
-            margin-bottom: 60px;
+            font-size: var(--font-size-lg);
+            color: var(--color-text-secondary);
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
         }
-        
+
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--spacing-2xl);
         }
-        
+
         .feature-card {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color-default);
+            border-radius: var(--border-radius-xl);
+            padding: var(--spacing-2xl);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
-        
+
         .feature-card::before {
             content: '';
             position: absolute;
@@ -240,407 +336,520 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #e50914, #6366f1);
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
-        
+
         .feature-card:hover::before {
             transform: scaleX(1);
         }
-        
+
         .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--color-primary);
         }
-        
+
         .feature-icon {
             font-size: 3rem;
-            margin-bottom: 20px;
+            margin-bottom: var(--spacing-lg);
             display: block;
         }
-        
-        .feature-card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1a202c;
-            margin-bottom: 15px;
+
+        .feature-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
         }
-        
-        .feature-card p {
-            color: #64748b;
+
+        .feature-description {
+            color: var(--color-text-secondary);
             line-height: 1.6;
         }
-        
+
         /* Video Section */
         .video-section {
-            padding: 100px 0;
-            background: #1a202c;
-            color: white;
+            background: var(--bg-primary);
         }
-        
+
+        .video-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: var(--border-radius-2xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-2xl);
+            border: 1px solid var(--border-color-default);
+        }
+
         .video-container {
-            text-align: center;
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
         }
-        
-        .video-placeholder {
-            background: #2d3748;
-            border-radius: 20px;
-            padding: 60px 40px;
-            margin: 40px 0;
-            border: 2px dashed #4a5568;
-            transition: all 0.3s ease;
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
         }
-        
-        .video-placeholder:hover {
-            border-color: #e50914;
-            background: #374151;
-        }
-        
-        .video-placeholder h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #e2e8f0;
-        }
-        
-        .video-placeholder p {
-            color: #a0aec0;
-        }
-        
+
         /* Pricing Section */
-        .pricing {
-            padding: 100px 0;
-            background: white;
-        }
-        
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            max-width: 800px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--spacing-3xl);
+            max-width: 900px;
             margin: 0 auto;
         }
-        
+
         .pricing-card {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 40px 30px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color-default);
+            border-radius: var(--border-radius-2xl);
+            padding: var(--spacing-3xl);
             text-align: center;
             position: relative;
             transition: all 0.3s ease;
         }
-        
+
         .pricing-card.featured {
-            border-color: #e50914;
+            border-color: var(--color-primary);
             transform: scale(1.05);
-            box-shadow: 0 20px 40px rgba(229, 9, 20, 0.2);
+            box-shadow: var(--shadow-2xl);
         }
-        
+
         .pricing-card.featured::before {
-            content: 'POPULAIRE';
+            content: '✨ POPULAIRE';
             position: absolute;
             top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            background: #e50914;
+            background: var(--color-primary);
             color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            padding: var(--spacing-xs) var(--spacing-lg);
+            border-radius: var(--border-radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
         }
-        
+
         .pricing-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-2xl);
         }
-        
+
         .pricing-card.featured:hover {
-            transform: scale(1.05) translateY(-5px);
+            transform: scale(1.05) translateY(-8px);
         }
-        
+
         .plan-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1a202c;
-            margin-bottom: 10px;
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
         }
-        
+
         .plan-price {
-            font-size: 3rem;
-            font-weight: 800;
-            color: #e50914;
-            margin-bottom: 5px;
+            font-size: 3.5rem;
+            font-weight: var(--font-weight-black);
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-xs);
         }
-        
+
         .plan-period {
-            color: #64748b;
-            margin-bottom: 30px;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--spacing-2xl);
         }
-        
+
         .plan-features {
             list-style: none;
-            margin-bottom: 30px;
+            margin-bottom: var(--spacing-2xl);
+            text-align: left;
         }
-        
+
         .plan-features li {
-            padding: 8px 0;
-            color: #4a5568;
+            padding: var(--spacing-sm) 0;
+            color: var(--color-text-secondary);
             position: relative;
-            padding-left: 25px;
+            padding-left: var(--spacing-2xl);
         }
-        
+
         .plan-features li::before {
             content: '✓';
             position: absolute;
             left: 0;
-            color: #10b981;
-            font-weight: bold;
+            color: var(--color-success);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-lg);
         }
-        
+
         /* CTA Section */
         .cta-section {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #e50914 0%, #6366f1 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            padding: var(--spacing-5xl) var(--spacing-2xl);
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
         .cta-section h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: var(--font-weight-bold);
+            color: white;
+            margin-bottom: var(--spacing-lg);
         }
-        
+
         .cta-section p {
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            opacity: 0.9;
+            font-size: var(--font-size-xl);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: var(--spacing-3xl);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        
+
+        .cta-section .btn-primary {
+            background: white;
+            color: var(--color-primary);
+        }
+
+        .cta-section .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-4px);
+        }
+
         /* Footer */
         .footer {
-            background: #1a202c;
-            color: white;
-            padding: 40px 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color-default);
+            padding: var(--spacing-3xl) var(--spacing-2xl);
             text-align: center;
         }
-        
-        .footer p {
-            color: #a0aec0;
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        
+
+        .footer p {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-2xl);
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--color-text-tertiary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--color-primary);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
+            .header-content {
+                padding: var(--spacing-md);
+            }
+
+            .nav-links {
+                gap: var(--spacing-lg);
+            }
+
+            .nav-link {
+                display: none;
+            }
+
             .hero-container {
                 grid-template-columns: 1fr;
                 text-align: center;
-                gap: 40px;
+                gap: var(--spacing-3xl);
             }
-            
-            .hero-content h1 {
-                font-size: 2.5rem;
+
+            .hero-stats {
+                justify-content: center;
             }
-            
+
             .cta-buttons {
-                flex-direction: column;
-                align-items: center;
+                justify-content: center;
             }
-            
+
             .features-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .pricing-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .pricing-card.featured {
                 transform: none;
             }
         }
-        
-        /* Chrome Store Button */
-        .chrome-store-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #4285f4;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-top: 20px;
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        .chrome-store-btn:hover {
-            background: #3367d6;
-            transform: translateY(-2px);
-        }
-        
-        .chrome-store-btn img {
-            width: 24px;
-            height: 24px;
-        }
-        
-        /* Coming Soon Badge */
-        .coming-soon {
-            background: #fbbf24;
-            color: #92400e;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-left: 10px;
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out;
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                🎬 FlixLingo
+            </a>
+            <nav class="nav-links">
+                <a href="#features" class="nav-link">Fonctionnalités</a>
+                <a href="#video" class="nav-link">Démo</a>
+                <a href="#pricing" class="nav-link">Tarifs</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <span id="themeIcon">🌙</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
-                <h1>Apprenez l'anglais avec Netflix</h1>
-                <p class="subtitle">Transformez votre temps de visionnage en cours d'anglais interactif</p>
-                <p class="description">
-                    Extension Chrome révolutionnaire qui capture les sous-titres Netflix, Disney+ et Prime Video 
-                    pour créer votre vocabulaire personnalisé avec l'IA et des flashcards intelligentes.
+                <h1>
+                    Apprenez l'anglais avec <span class="gradient-text">Netflix</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Transformez votre temps de visionnage en cours d'anglais interactif.
+                    Capturez, apprenez et maîtrisez de nouveaux mots depuis Netflix, Disney+ et Prime Video.
                 </p>
-                <div class="cta-buttons">
-                    <a href="#" class="btn-primary" id="chrome-store-link">
-                        🚀 Installer l'Extension
-                        <span class="coming-soon">Bientôt</span>
-                    </a>
-                    <a href="#features" class="btn-secondary">📖 Découvrir</a>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="phone-mockup">
-                    <div style="width: 100%; height: 300px; background: rgba(255,255,255,0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                        📱 Interface Extension
+
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">Utilisateurs</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">1M+</div>
+                        <div class="stat-label">Mots appris</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">4.8★</div>
+                        <div class="stat-label">Note moyenne</div>
                     </div>
                 </div>
-                <div class="floating-elements">
-                    <div class="floating-word">amazing</div>
-                    <div class="floating-word">brilliant</div>
-                    <div class="floating-word">adventure</div>
-                    <div class="floating-word">discover</div>
+
+                <div class="cta-buttons">
+                    <a href="https://chromewebstore.google.com/detail/streaming-english-learner/ihpcbahpgelkeebgolejlpipcogffacd?hl=fr"
+                       class="btn btn-primary" target="_blank">
+                        🚀 Installer l'Extension
+                    </a>
+                    <a href="#features" class="btn btn-secondary">
+                        📖 En savoir plus
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="hero-card">
+                    <div class="floating-words">
+                        <div class="word-item">
+                            <div class="word-en">amazing</div>
+                            <div class="word-fr">incroyable</div>
+                        </div>
+                        <div class="word-item">
+                            <div class="word-en">brilliant</div>
+                            <div class="word-fr">brillant</div>
+                        </div>
+                        <div class="word-item">
+                            <div class="word-en">adventure</div>
+                            <div class="word-fr">aventure</div>
+                        </div>
+                        <div class="word-item">
+                            <div class="word-en">discover</div>
+                            <div class="word-fr">découvrir</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="features" id="features">
+    <section class="section section-dark" id="features">
         <div class="container">
-            <h2 class="section-title">Fonctionnalités Révolutionnaires</h2>
-            <p class="section-subtitle">
-                Une approche unique qui combine divertissement et apprentissage pour des résultats exceptionnels
-            </p>
-            
+            <div class="section-header">
+                <h2 class="section-title">Fonctionnalités Révolutionnaires</h2>
+                <p class="section-subtitle">
+                    Une approche unique qui combine divertissement et apprentissage pour des résultats exceptionnels
+                </p>
+            </div>
+
             <div class="features-grid">
                 <div class="feature-card">
                     <span class="feature-icon">🎬</span>
-                    <h3>Capture Automatique</h3>
-                    <p>Capture les sous-titres Netflix, Disney+ et Prime Video en temps réel. Un clic suffit pour sauvegarder n'importe quel mot.</p>
+                    <h3 class="feature-title">Capture Automatique</h3>
+                    <p class="feature-description">
+                        Capturez les sous-titres Netflix, Disney+ et Prime Video en temps réel.
+                        Un simple clic pour sauvegarder n'importe quel mot.
+                    </p>
                 </div>
-                
+
                 <div class="feature-card">
                     <span class="feature-icon">🤖</span>
-                    <h3>Intelligence Artificielle</h3>
-                    <p>Traductions instantanées, définitions contextuelles et exemples d'usage générés par notre IA avancée.</p>
+                    <h3 class="feature-title">Intelligence Artificielle</h3>
+                    <p class="feature-description">
+                        Traductions instantanées, définitions contextuelles et exemples d'usage
+                        générés par notre IA avancée.
+                    </p>
                 </div>
-                
+
                 <div class="feature-card">
                     <span class="feature-icon">🃏</span>
-                    <h3>Flashcards Intelligentes</h3>
-                    <p>Système de répétition espacée avec algorithme SM-2 pour une mémorisation optimale et durable.</p>
+                    <h3 class="feature-title">Flashcards Intelligentes</h3>
+                    <p class="feature-description">
+                        Système de répétition espacée avec algorithme SM-2 pour une mémorisation
+                        optimale et durable.
+                    </p>
                 </div>
-                
+
                 <div class="feature-card">
                     <span class="feature-icon">🎮</span>
-                    <h3>Gamification</h3>
-                    <p>XP, niveaux, streaks et badges pour maintenir votre motivation et suivre vos progrès.</p>
+                    <h3 class="feature-title">Gamification</h3>
+                    <p class="feature-description">
+                        XP, niveaux, streaks et badges pour maintenir votre motivation et suivre
+                        vos progrès au quotidien.
+                    </p>
                 </div>
-                
+
                 <div class="feature-card">
                     <span class="feature-icon">📊</span>
-                    <h3>Statistiques Avancées</h3>
-                    <p>Tableaux de bord détaillés pour analyser votre progression et identifier vos points forts.</p>
+                    <h3 class="feature-title">Analytics Avancées</h3>
+                    <p class="feature-description">
+                        Tableaux de bord détaillés avec graphiques pour analyser votre progression
+                        et identifier vos points forts.
+                    </p>
                 </div>
-                
-                <div class="feature-card">
-                    <span class="feature-icon">🔄</span>
-                    <h3>Synchronisation Cloud</h3>
-                    <p>Vos données synchronisées sur tous vos appareils Chrome pour apprendre partout.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Video Section -->
-    <section class="video-section">
-        <div class="container">
-            <div class="video-container">
-                <h2 class="section-title" style="color: white;">Découvrez Netflix English Learner en Action</h2>
-                <p class="section-subtitle" style="color: #a0aec0;">
-                    Voyez comment transformer votre expérience Netflix en cours d'anglais interactif
-                </p>
-                
-                <div class="video-placeholder">
-                    <h3>🎥 Vidéo de Démonstration</h3>
-                    <p>Vidéo de présentation complète à venir</p>
-                    <p style="margin-top: 10px; font-size: 0.9rem;">
-                        Capture d'écran • Fonctionnalités • Interface • Résultats
+                <div class="feature-card">
+                    <span class="feature-icon">🎨</span>
+                    <h3 class="feature-title">Design Moderne</h3>
+                    <p class="feature-description">
+                        Interface épurée avec thème clair/sombre, animations fluides et expérience
+                        utilisateur optimale.
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
+    <!-- Video Section -->
+    <section class="section video-section" id="video">
         <div class="container">
-            <h2 class="section-title">Tarifs Simples et Transparents</h2>
-            <p class="section-subtitle">
-                Commencez gratuitement, passez au premium quand vous êtes prêt
-            </p>
-            
+            <div class="section-header">
+                <h2 class="section-title">Découvrez FlixLingo en Action</h2>
+                <p class="section-subtitle">
+                    Voyez comment transformer votre expérience Netflix en cours d'anglais interactif
+                </p>
+            </div>
+
+            <div class="video-wrapper">
+                <div class="video-container">
+                    <iframe
+                        src="https://www.youtube.com/embed/NEXclpKPMYw"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="section section-dark" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Tarifs Simples et Transparents</h2>
+                <p class="section-subtitle">
+                    Commencez gratuitement, passez au premium quand vous êtes prêt
+                </p>
+            </div>
+
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <h3 class="plan-name">Gratuit</h3>
                     <div class="plan-price">0€</div>
                     <p class="plan-period">Pour toujours</p>
-                    
+
                     <ul class="plan-features">
                         <li>500 mots de vocabulaire</li>
                         <li>Traductions IA incluses</li>
                         <li>Flashcards de base</li>
                         <li>Statistiques simples</li>
-                        <li>Netflix + Disney+ + Prime Video</li>
+                        <li>Netflix + Disney+ + Prime</li>
                     </ul>
-                    
-                    <a href="#" class="btn-primary">Commencer Gratuitement</a>
+
+                    <a href="https://chromewebstore.google.com/detail/streaming-english-learner/ihpcbahpgelkeebgolejlpipcogffacd?hl=fr"
+                       class="btn btn-primary" target="_blank">
+                        Commencer Gratuitement
+                    </a>
                 </div>
-                
+
                 <div class="pricing-card featured">
                     <h3 class="plan-name">Premium</h3>
                     <div class="plan-price">4.99€</div>
                     <p class="plan-period">par mois</p>
-                    
+
                     <ul class="plan-features">
                         <li>Vocabulaire illimité</li>
                         <li>IA avancée + contexte</li>
                         <li>4 modes de flashcards</li>
-                        <li>Statistiques détaillées</li>
+                        <li>Analytics détaillées</li>
                         <li>Gamification complète</li>
                         <li>Support prioritaire</li>
                     </ul>
-                    
-                    <a href="#" class="btn-primary">Passer au Premium</a>
+
+                    <a href="https://chromewebstore.google.com/detail/streaming-english-learner/ihpcbahpgelkeebgolejlpipcogffacd?hl=fr"
+                       class="btn btn-primary" target="_blank">
+                        Passer au Premium
+                    </a>
                 </div>
             </div>
         </div>
@@ -648,102 +857,107 @@
 
     <!-- CTA Section -->
     <section class="cta-section">
-        <div class="container">
+        <div class="cta-content">
             <h2>Prêt à Révolutionner Votre Apprentissage ?</h2>
             <p>Rejoignez des milliers d'utilisateurs qui apprennent l'anglais en s'amusant</p>
-            
-            <a href="#" class="btn-primary" style="background: white; color: #e50914;" id="final-cta">
-                🚀 Installer Netflix English Learner
-            </a>
-            
-            <a href="https://chrome.google.com/webstore" class="chrome-store-btn" target="_blank">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-                Disponible sur Chrome Web Store
-                <span class="coming-soon">Bientôt</span>
+
+            <a href="https://chromewebstore.google.com/detail/streaming-english-learner/ihpcbahpgelkeebgolejlpipcogffacd?hl=fr"
+               class="btn btn-primary" target="_blank">
+                🚀 Installer FlixLingo Maintenant
             </a>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Netflix English Learner. Tous droits réservés.</p>
-            <p style="margin-top: 10px;">
-                <a href="privacy-policy.html" style="color: #a0aec0; text-decoration: none;">Politique de Confidentialité</a>
-            </p>
+        <div class="footer-content">
+            <p>&copy; 2025 FlixLingo. Tous droits réservés.</p>
+            <div class="footer-links">
+                <a href="privacy-policy.html" class="footer-link">Politique de Confidentialité</a>
+                <a href="https://chromewebstore.google.com/detail/streaming-english-learner/ihpcbahpgelkeebgolejlpipcogffacd?hl=fr"
+                   class="footer-link" target="_blank">Chrome Web Store</a>
+                <a href="https://youtu.be/NEXclpKPMYw" class="footer-link" target="_blank">YouTube</a>
+            </div>
         </div>
     </footer>
 
     <script>
-        // Smooth scrolling
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Get saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
                     });
                 }
             });
         });
 
-        // Update Chrome Store links when extension is published
-        function updateChromeStoreLinks(chromeStoreUrl) {
-            const links = document.querySelectorAll('#chrome-store-link, #final-cta');
-            links.forEach(link => {
-                link.href = chromeStoreUrl;
-                link.querySelector('.coming-soon')?.remove();
-            });
-        }
-
-        // Animation on scroll
+        // Intersection Observer for animations
         const observerOptions = {
             threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            rootMargin: '0px 0px -100px 0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.classList.add('animate-in');
+                    observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
-        // Observe feature cards
-        document.querySelectorAll('.feature-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'all 0.6s ease';
-            observer.observe(card);
+        // Observe elements for animation
+        document.querySelectorAll('.feature-card, .pricing-card').forEach(el => {
+            observer.observe(el);
         });
 
-        // Pricing cards animation
-        document.querySelectorAll('.pricing-card').forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = `all 0.6s ease ${index * 0.2}s`;
-            observer.observe(card);
-        });
+        // Header scroll effect
+        let lastScroll = 0;
+        const header = document.querySelector('.header');
 
-        // Floating words animation enhancement
-        document.querySelectorAll('.floating-word').forEach(word => {
-            word.addEventListener('mouseenter', () => {
-                word.style.transform = 'scale(1.1) translateY(-5px)';
-            });
-            
-            word.addEventListener('mouseleave', () => {
-                word.style.transform = 'scale(1) translateY(0px)';
-            });
-        });
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
 
-        // Example: Update when extension is published
-        // updateChromeStoreLinks('https://chrome.google.com/webstore/detail/netflix-english-learner/YOUR_EXTENSION_ID');
+            if (currentScroll <= 0) {
+                header.style.boxShadow = 'none';
+            } else {
+                header.style.boxShadow = 'var(--shadow-md)';
+            }
+
+            lastScroll = currentScroll;
+        });
     </script>
 </body>
 </html>
